@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "testing",
+			"problemMatcher": [],
+			"label": "npm: testing",
+			"detail": "npx playwright test tests/quiklyz2.spec.ts"
+		}
+	]
+}
