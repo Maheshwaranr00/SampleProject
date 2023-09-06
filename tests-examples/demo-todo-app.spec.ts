@@ -4,12 +4,6 @@ test.beforeEach(async ({ page }) => {
   await page.goto('https://demo.playwright.dev/todomvc');
 });
 
-const TODO_ITEMS = [
-  'buy some cheese',
-  'feed the cat',
-  'book a doctors appointment'
-];
-
 test.describe('New Todo', () => {
   test('should allow me to add todo items', async ({ page }) => {
     // create a new todo locator
