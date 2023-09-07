@@ -1,8 +1,8 @@
 import {test, chromium} from "@playwright/test";
-import * as data from "C:/Users/david/Downloads/Mahesh/scripts/Js_files/login.cred.json";
+import * as data from "C:/Users/david/Downloads/Mahesh/scripts/tests/login.cred.json";
 
 
-    test(`filereading`, async () => {        
+    test('filereading', async () => {        
         const browser = await chromium.launch({headless :false});
         const context = await browser.newContext();
         const page = await context.newPage();
