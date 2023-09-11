@@ -35,4 +35,5 @@ test('Quiklyz Business', async() => {
     await page.click('(//mat-icon[@role="img"])[1]');
     page.waitForTimeout(2000);
     await page.screenshot({ path: 'C:/Users/david/Downloads/Mahesh/scripts/tests/screenshot2.png' });
+    
 })

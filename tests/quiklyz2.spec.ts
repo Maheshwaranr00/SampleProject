@@ -35,8 +35,5 @@ test('Quiklyz2',async() => {
     fill("what is the minimum amount plan for an individual? ");
     await page.locator('xpath=//mat-icon[text()="search"]').click();
     await page.pause();
-
-
-    //await page.locator('xpath=(//span[@class="actionLabel" ])[11]').click();
-         
+    //await page.locator('xpath=(//span[@class="actionLabel" ])[11]').click();     
 })
