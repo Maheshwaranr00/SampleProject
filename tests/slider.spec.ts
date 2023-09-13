@@ -4,35 +4,39 @@ test('Slider handling', async() =>{
     const browser = await chromium.launch({headless :false});
     const context = await browser.newContext( );
     const page = await context.newPage();
-    await page.goto("https://uat.quiklyz.com/corporate-employee/car-lease-list");
-    const maxValue = 20;
-    // drag-and-drop target value in percentage
-    const targetValue = 0.4; // 40%  
-    // retrieving the slider handle HTML element
-    const sliderHandle = page.locator('xpath=//mat-slider[@class="mat-slider mat-focus-indicator mat-range-slider mat-range-min-slider mat-accent mat-slider-horizontal mat-slider-min-value ng-untouched ng-pristine ng-valid"]//div[@class="mat-slider-thumb"]').first();
-    // retrieving the slider HTML element
-    const slider = page.locator('mat-slider[role="slider"]').first();  
-    // getting the slider bounding box size
+    await page.goto("https://uat.quiklyz.com/");
+    await page.locator("xpath=//div[text()='Chennai']").click();  
+    await page.click("span[class='mat-button-wrapper']");        
+    const targetValue = 0.2; 
+    const targetValue2 = -0.2;    
+    const sliderHandle = page.locator('div[class="mat-slider-thumb"]').first();    
+    const slider = page.locator('mat-slider[role="slider"]').first();      
     const sliderBoundingBox = await slider.boundingBox();
+    console.log(sliderBoundingBox?.width,sliderBoundingBox?.height);
+    await page.pause();
     if(sliderBoundingBox != null)
     {
         await sliderHandle.dragTo(sliderHandle, {
             force: true,
             targetPosition: {
-              // moving the slider to the target value in %
               x: sliderBoundingBox.width * targetValue,
               y: 0,
             },
           });
     }else throw new Error("No Element")  
-    // performing the drag-and-drop interaction      
-    // retrieving the input HTML element
-    const input = page.locator(".ant-input-number-input").first();
-    // getting the "value" HTML attribute
-    const value = await input.getAttribute("value");  
-    // calculating the expected value
-    // const expectedValue = `${maxValue * targetValue}`;  
-    // expect(value).toEqual(expectedValue);
+    const sliderHandle2 = page.locator('div[class="mat-slider-thumb"]').nth(1);
+    if(sliderBoundingBox != null)
+    {
+        await sliderHandle2.dragTo(sliderHandle2, {
+            force: true,
+            targetPosition: {
+              x: sliderBoundingBox.width * targetValue2,
+              y: 0,
+            },
+          });
+    }else throw new Error("No Element")  
+    const price = await page.locator('//span[@class="facet-value ng-star-inserted"]').textContent();
+    console.log(price);    
   });
   
 

@@ -16,7 +16,7 @@ const userdata=[{
 userdata.forEach(a => {
     test(`parallel ${a.username}`, async ({page}) => {        
     await page.goto("https://demo.guru99.com/V1/index.php");
-     headless : false    
+       
     await page.locator('input[name="uid"]').fill(a.username);    
     await page.locator('input[name="password"]').fill(a.password);
     await page.getByRole('button', { name: 'LOGIN' }).click();

@@ -28,17 +28,29 @@ export default defineConfig({
     viewport: {
       width: 2000,
       height: 1600
-    },
-
+    },   
+    browserName: 'chromium',
+    headless: false,
+   
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
+  expect:{
+    timeout:5000
+  },
+  timeout: 30 * 1000,
+
 
   /* Configure projects for major browsers */
+  
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'setup',
+      testMatch: /global.setup\.ts/,
     },
 
  

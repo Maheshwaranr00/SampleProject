@@ -11,5 +11,5 @@ test('How it works',async()=>{
     console.log(await page.locator("(//span[@class='ql-size-huge'])[1]").allInnerTexts()); //text 
     await page.locator("xpath=(//span[@class='mat-button-wrapper'])[2]").click();  //How it works
     await page.click('xpath=//span[text()="Subscription Benefits"]');  //subscription benefits
-    await page.click('xpath=//')
+    await page.click('text=Quiklyz Subscription vs Buying a Car on Loan');
 })
