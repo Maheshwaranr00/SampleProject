@@ -4,8 +4,6 @@ import {test,chromium,expect} from "@playwright/test";
 const BaseUrl = "https://uat.quiklyz.com/";    
 
 
-
-
 test('Homepage',async({page}) => {    
     await page.goto(BaseUrl);   
     await page.locator("xpath=//div[text()='Chennai']").click();  //city
@@ -14,7 +12,30 @@ test('Homepage',async({page}) => {
     await page.locator('xpath=(//a[text()=" Read More"])[1]').click();  //first read more
     await page.locator('xpath=(//a[text()=" Less"])[1]').click();   // same   
     await page.pause();        
+    await page.click('//a[text()=" View All"]');
+    await page.click('//a[text()=" View Less"]');
+    await page.click('//span[text()="Check My Eligibility"]');
+    await page.goBack();
     await page.click('xpath=//span[text()="More Videos"]');
+})
+test('Accordian',async({page})=>{    
+    await page.goto(BaseUrl);
+    await page.locator("xpath=//div[text()='Chennai']").click();    
+    await page.locator('xpath=(//mat-icon[text()="add" ])[1]').click();  // Accordian
+     //text will open after click the accordian
+    const string2 = await page.locator('xpath=//p[contains(text(),"Unlike the self-drive car")]').allTextContents();
+    console.log(string2);
+    await page.locator('xpath=(//mat-icon[@role="img" ])[1]').click(); //close text
+    await page.locator('xpath=(//mat-icon[text()="add" ])[2]').click(); // Accordian
+    //text will open after click the accordian
+    const string3 = await page.locator('xpath=(//span[contains(text(),"One Monthly Fee" )])').allTextContents();
+    console.log(string3);
+    await page.locator('xpath=(//mat-icon[@role="img" ])[2]').click(); //close text
+    await page.locator('xpath=(//mat-icon[text()="add" ])[3]').click();  // Accordian
+    //text will open after click the accordian
+    const string4 = await page.locator('xpath=(//li[contains(text(),"Strong relationships with " )])').allTextContents();
+    console.log(string4);
+    await page.locator('xpath=(//mat-icon[@role="img" ])[3]').click();//close text
 })
 test('Find cars ', async({page}) =>{   
     await page.goto(BaseUrl);
@@ -39,43 +60,34 @@ test('Login',async({page})=>{
     await page.pause();
     await page.getByRole('button', { name: 'Get OTP' }).click();//get otp
 })
-test('Accordian',async({page})=>{    
-    await page.goto(BaseUrl);
-    await page.locator("xpath=//div[text()='Chennai']").click();    
-    await page.locator('xpath=(//mat-icon[text()="add" ])[1]').click();  // Accordian
-     //text will open after click the accordian
-    const string2 = await page.locator('xpath=//p[contains(text(),"Unlike the self-drive car")]').allTextContents();
-    console.log(string2);
-    await page.locator('xpath=(//mat-icon[@role="img" ])[1]').click(); //close text
-    await page.locator('xpath=(//mat-icon[text()="add" ])[2]').click(); // Accordian
-    //text will open after click the accordian
-    const string3 = await page.locator('xpath=(//span[contains(text(),"One Monthly Fee" )])').allTextContents();
-    console.log(string3);
-    await page.locator('xpath=(//mat-icon[@role="img" ])[2]').click(); //close text
-    await page.locator('xpath=(//mat-icon[text()="add" ])[3]').click();  // Accordian
-    //text will open after click the accordian
-    const string4 = await page.locator('xpath=(//li[contains(text(),"Strong relationships with " )])').allTextContents();
-    console.log(string4);
-    await page.locator('xpath=(//mat-icon[@role="img" ])[3]').click();//close text
-})
-test('FAQ - Fees and Tenure',async({page})=>{   
+
+//today
+for(let i=1; i<9; i++){
+    const queries= ["","How is car leasing beneficial to your organisation?",
+    "What is the tenure for which I can Quiklyz a car?",
+    "When do I need to pay the monthly subscription fee?", 
+    "Which cars can I subscribe to on Quiklyz?",
+    "How do I subscribe to a car on Quiklyz?",
+    "How do I get the car service arranged?",
+    "How old do I need to be to subscribe to a car on Quiklyz?",
+    "What is Assured Buyback product offering?"]
+test(`FAQ${i}`,async({page})=>{    
     await page.goto(BaseUrl);
     await page.locator("xpath=//div[text()='Chennai']").click();   
     await page.locator("xpath=//span[text()='View All']").click(); // below the accordian It will navigate to FAQ
-    await page.locator("xpath=//div[text()=' Fees and Tenure ']").click(); //Fees   
-    await page.locator('button:text("View More")').click();    
+    await page.locator(`xpath=(//div[@class="mat-tab-label-content"])[${i}]`).click();
+    const field = await page.locator(`xpath=(//div[@class="mat-tab-label-content"])[${i}]`).textContent();
+    await page.locator('xpath=//button[text()="View More"]').click();
     await page.locator("xpath=//a[text()='Expand All']").click();
-    expect("xpath=//a[text()='Minimize All']").toContain('Minimize All');
-})
-test('FAQ - Booking',async({page})=>{    
-    await page.goto(BaseUrl);
-    await page.locator("xpath=//div[text()='Chennai']").click();   
-    await page.locator("xpath=//span[text()='View All']").click(); // below the accordian It will navigate to FAQ
-    await page.locator('xpath=//div[text()=" Booking and Registration "]').click();
     await page.locator('xpath=(//input[@type="text"])[1]').
-    fill("what is the minimum amount plan for an individual? ");
-    await page.locator('xpath=//mat-icon[text()="search"]').click();  
+    fill(queries[i]);
+    await page.keyboard.press("Enter");   
+    const add = await page.locator('//mat-icon[text()="add"]').allTextContents();
+    expect(add.length, `${field}`).toEqual(1);     
+    await page.locator('(//a[text()="Expand All"])').click();
+    console.log('Query is shortlisted from '+field);    
 })
+}
 test('Quiklyz Business', async({page}) => {    
     await page.goto(BaseUrl);
     await page.locator("xpath=//div[text()='Chennai']").click(); 
@@ -97,54 +109,60 @@ test('homepage mouse hover',async({page})=>{
     await page.click('xpath=(//span[text()=" Check my Eligibility "])');
     await page.waitForTimeout(2000);   
 })
-test('Compare Cars',async({page})=>{   
-    await page.goto(BaseUrl);
-    await page.locator("xpath=//div[text()='Chennai']").click(); 
-    await page.click('text=   More   ');
-    await page.click('xpath=//span[text()="Compare Cars"]');
-    await page.pause();
-//car 1 details
-    await page.click('xpath=(//mat-label[text()=" Select Brand "])[1]');    
-    await page.click('xpath=//span[text()=" Tata"]');
-    await page.click('xpath=//mat-label[text()=" Select Model "]');    
-    await page.click('xpath=//span[text()=" Tata Tiago EV "]'); 
-    await page.click('xpath=(//mat-label[text()=" Select Variant "])[1]');    
-    await page.click('xpath=//span[text()=" Tiago EV XT Long Range Electric Automatic Metallic Active"]');
-//car 2 details
-    await page.click('xpath=(//mat-label[text()=" Select Brand "])[1]');    
-    await page.click('xpath=//span[text()=" Volkswagen"]');
-    await page.click('xpath=//mat-label[text()=" Select Model "]');
-    await page.click('xpath=//span[text()=" Volkswagen Taigun "]'); 
-    await page.click('xpath=(//mat-label[text()=" Select Variant "])[2]');
-    await page.click('xpath=//span[text()=" Taigun Comfortline 1.0 TSI Petrol Manual Metallic Active"]');
-//car 3 details
-    await page.click('xpath=(//mat-label[text()=" Select Brand "])[1]');    
-    await page.click('xpath=//span[text()=" Audi"]');
-    await page.click('xpath=//mat-label[text()=" Select Model "]');
-    await page.click('xpath=//span[text()=" Audi e-tron "]'); 
-    await page.click('xpath=(//mat-label[text()=" Select Variant "])[3]');
-    await page.click('xpath=//span[text()=" e-tron 50 Electric Automatic Metallic Active"]');
 
-    await page.click('xpath=//mat-panel-title[text()=" Features "]');
-    await page.click('(//span[@class="mat-radio-outer-circle"])[2]');
-    await page.click('(//span[@class="fa fa-close car-removal-icon"])[1]');
-    //await page.click('(//span[@class="mat-radio-outer-circle"])[1]');
-    await page.click('xpath=//mat-panel-title[text()=" Features "]');
-    await page.click('xpath=//mat-panel-title[text()=" Specifications "]');
-    await page.click('(//span[@class="mat-button-wrapper"])[40]');
-
-    await page.pause();   
-})
-test('How it works',async({page})=>{   
+//today
+test('How it works - Car subscription',async({page})=>{   
     await page.goto(BaseUrl);
     await page.locator("xpath=//div[text()='Chennai']").click();
     await page.locator("xpath=(//span[@class='mat-button-wrapper'])[2]").click();   //How it works
     await page.locator("xpath=(//span[contains(text(),'Car Subscription Process')])[2]").click();  //car subscription
     console.log(await page.locator("(//span[@class='ql-size-huge'])[1]").allInnerTexts()); //text 
-    await page.locator("xpath=(//span[@class='mat-button-wrapper'])[2]").click();  //How it works
-    await page.click('xpath=//span[text()="Subscription Benefits"]');  //subscription benefits
-    await page.click('text=Quiklyz Subscription vs Buying a Car on Loan');
+    await page.click('//span[text()="Browse Cars"]');   
+    expect(page).toHaveURL('https://uat.quiklyz.com/car-lease-search');
+    await page.goBack();
+    await page.pause();    
+    await page.waitForTimeout(8000);
+    await page.locator('//span[text()="Check Eligibility"]').click();
+    expect(page).toHaveURL('https://uat.quiklyz.com/login');
+    console.log('Pages successfully navigated');   
 })
+test('How it works - subscription benefits',async({page})=>{
+    await page.goto(BaseUrl);
+    await page.locator("xpath=//div[text()='Chennai']").click();
+    await page.locator("xpath=(//span[@class='mat-button-wrapper'])[2]").click();   //How it works
+    await page.click('xpath=//span[text()="Subscription Benefits"]');  //subscription benefits
+    await page.click('text=Quiklyz Subscription vs Buying a Car on Loan');   
+    expect(page).toHaveURL('https://uat.quiklyz.com/page/4e15b08e-061d-42fd-9b8c-0d5bdfbc4571/4063b97b-f531-44e4-a880-5c597913d106');
+    await page.goBack();
+    await page.click('//span[text()="Find your Car"]');   
+    expect(page).toHaveURL('https://uat.quiklyz.com/car-lease-search');
+    await page.goBack();
+    await page.locator('//span[text()="Check your Eligibility"]').click();
+    expect(page).toHaveURL('https://uat.quiklyz.com/login');
+    await page.waitForTimeout(3000);    
+    console.log('Pages successfully navigated');   
+})
+test('how it works - Ask an Expert',async({page})=>{
+    await page.goto(BaseUrl);
+    await page.locator("xpath=//div[text()='Chennai']").click();
+    await page.locator("xpath=(//span[@class='mat-button-wrapper'])[2]").click();
+    await page.click('xpath=//span[text()="Ask an Expert"]'); 
+    await page.fill('//input[@data-placeholder="Enter Your Name *"]',"Mahesh");
+    await page.fill('//input[@data-placeholder="Contact Number *"]',"6598767896");
+    await page.fill('//input[@data-placeholder="Enter the Email"]',"Maheshwaran@gmail.com");
+    await page.click('//span[text()="Select City *"]');
+    await page.click('//span[text()=" Chennai "]'); 
+    await page.fill('//textarea[@data-placeholder="Type Message"]',"fgkjghhgljkgcjhfl");
+    await page.click('text="Submit Request"');
+})
+test('how it works - videos',async({page})=>{
+    await page.goto(BaseUrl);
+    await page.locator("xpath=//div[text()='Chennai']").click();
+    await page.locator("xpath=(//span[@class='mat-button-wrapper'])[2]").click();
+    await page.click('xpath=//span[text()="Videos"]'); 
+    expect(page).toHaveURL('https://uat.quiklyz.com/videos');
+})//today
+
 test('registration',async({page})=>{   
     await page.goto(BaseUrl);
     await page.locator("xpath=//div[text()='Chennai']").click();  
@@ -192,19 +210,20 @@ test('Pagination',async({page})=>{
     console.log("Number of cars in the Sixth Page:"+carName5.length);   
     await page.pause();
 })
-test('Check Box filter',async({page})=>{   
+for(let i=1; i < 16; i++){
+test(`Check Box filter${i}`,async({page})=>{   
     const car =page.locator('xpath=//a[@class="fieldvalue make-name ng-star-inserted"]');
-    const checkBox = page.locator('(//span[@class="facet-value"])[9]');
+    const checkBox =await page.locator('//span[@class="facet-value"]').allTextContents();
+    const checkBox1 =await page.locator(`(//span[@class="facet-value"])[${i}]`)
     await page.goto(BaseUrl);
     await page.locator("xpath=//div[text()='Chennai']").click();  
     await page.locator("span[class='mat-button-wrapper']").first().click(); 
     await page.waitForTimeout(2000);
-    await checkBox.click();    
+    await checkBox1.click();    
     await page.waitForTimeout(6000);
-    const string = await checkBox.textContent();
+    const string = await checkBox1.textContent();
     let b = string?.substring(1,4);
     console.log("Selected CheckBox :"+string);
-    await page.pause();
     const title = await car.allTextContents();
     console.log("Number of cars :"+title.length,title);
     for(let i =0; i< title.length; i++){
@@ -212,10 +231,12 @@ test('Check Box filter',async({page})=>{
     }
     console.log("Car Names are shortlisted according to the selected checkbox ");
 })
+}
+
 test('Validating Sliders',async({page})=>{   
     await page.goto(BaseUrl);
     await page.locator("xpath=//div[text()='Chennai']").click();  
-    await page.locator("span[class='mat-button-wrapper']").click();       
+    await page.locator("span[class='mat-button-wrapper']").first().click();       
     const targetValue = 0.2; 
     const targetValue2 = -0.2;    
     const sliderHandle = page.locator('div[class="mat-slider-thumb"]').first();    
@@ -271,17 +292,66 @@ test('Counting',async({page})=>{
     const titles = await car.allTextContents();
     console.log(checkBoxString, titles.length);
 })
+test('Compare Cars',async({page})=>{   
+    await page.goto(BaseUrl);
+    await page.locator("xpath=//div[text()='Chennai']").click(); 
+    await page.click('text=   More   ');
+    await page.click('xpath=//span[text()="Compare Cars"]');
+    await page.pause();
+//car 1 details
+    await page.click('xpath=(//mat-label[text()=" Select Brand "])[1]');    
+    await page.click('xpath=//span[text()=" Tata"]');
+    await page.click('xpath=//mat-label[text()=" Select Model "]');    
+    await page.click('xpath=//span[text()=" Tata Tiago EV "]'); 
+    await page.click('xpath=(//mat-label[text()=" Select Variant "])[1]');    
+    await page.click('xpath=//span[text()=" Tiago EV XT Long Range Electric Automatic Metallic Active"]');
+//car 2 details
+    await page.click('xpath=(//mat-label[text()=" Select Brand "])[1]');    
+    await page.click('xpath=//span[text()=" Volkswagen"]');
+    await page.click('xpath=//mat-label[text()=" Select Model "]');
+    await page.click('xpath=//span[text()=" Volkswagen Taigun "]'); 
+    await page.click('xpath=(//mat-label[text()=" Select Variant "])[2]');
+    await page.click('xpath=//span[text()=" Taigun Comfortline 1.0 TSI Petrol Manual Metallic Active"]');
+//car 3 details
+    await page.click('xpath=(//mat-label[text()=" Select Brand "])[1]');    
+    await page.click('xpath=//span[text()=" Audi"]');
+    await page.click('xpath=//mat-label[text()=" Select Model "]');
+    await page.click('xpath=//span[text()=" Audi e-tron "]'); 
+    await page.click('xpath=(//mat-label[text()=" Select Variant "])[3]');
+    await page.click('xpath=//span[text()=" e-tron 50 Electric Automatic Metallic Active"]');
+
+    await page.click('xpath=//mat-panel-title[text()=" Features "]');
+    await page.click('(//span[@class="mat-radio-outer-circle"])[2]');
+    await page.click('(//span[@class="fa fa-close car-removal-icon"])[1]');
+    //await page.click('(//span[@class="mat-radio-outer-circle"])[1]');
+    await page.click('xpath=//mat-panel-title[text()=" Features "]');
+    await page.click('xpath=//mat-panel-title[text()=" Specifications "]');
+    await page.click('(//span[@class="mat-button-wrapper"])[40]');
+
+    await page.pause();   
+})//today
 test('Blogs',async({page})=>{
     await page.goto(BaseUrl); 
     await page.locator("xpath=//div[text()='Chennai']").click();
     await page.locator('(//span[@class="mat-button-wrapper"])[8]').click();
-    await page.locator('//span[text()="Blog"]').nth(1).click();    
+    await page.locator('//span[text()="Blog"]').nth(1).click();   
+    await page.click('//button[text()="Load More"]');
+    await page.screenshot({path:'C:/Users/david/Downloads/Mahesh/scripts/tests/screenshots.png'})
+    await page.click('//button[text()="Load Less"]');
     await page.locator('[title*="Advantage Buyback"]').click();
     await page.waitForTimeout(3000);
     console.log(await page.locator('[style*="font-family"]').allTextContents());
+    await page.goBack();
     await page.locator('[title*="About Car Subscription"]').click();
     await page.waitForTimeout(3000);
     console.log(await page.locator('//p[contains(text(),"those new to the concept")]').allTextContents());
     await page.pause();
+})//today
+test('About Us',async({page})=>{
+    await page.goto(BaseUrl); 
+    await page.locator("xpath=//div[text()='Chennai']").click();
+    await page.click('text="   More   "');
+    await page.click('(//span[text()="About Us"])[2]');
+    console.log(await page.locator('//p[@class="ql-align-justify"]').allTextContents());
 })
 
