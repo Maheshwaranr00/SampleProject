@@ -1,4 +1,20 @@
- {
-   "username":"mahesh",
-   "password":"45rt"
+ { 
+   "data":[
+      {
+         "username":[
+            "mahesh",
+            "jameen",
+            "subash",
+            "sundar"
+         ]
+      },
+      {
+         "password":[
+            "45rt",
+            "Gkj89",
+            "ko90",
+            "ftg87"
+         ]
+      }
+   ]
 }

@@ -1,21 +1,22 @@
 {
-  "name": "scripts",
+  "name": "script2",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": { "testing": "npx playwright test tests/quiklyz2.spec.ts"},
+  "scripts": {
+    "testing": "npx playwright test tests/quiklyz2.spec.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  
   "devDependencies": {
-  "@playwright/test": "^1.37.1"    
+    "@playwright/test": "^1.37.1"
   },
   "directories": {
     "test": "tests"
   },
+  "description": "",
   "dependencies": {
-    "playwright-core": "^1.37.1"
-  },
-  "description": ""
-  
+    "exceljs": "^4.4.0",
+    "mammoth": "^1.6.0"
+  }
 }

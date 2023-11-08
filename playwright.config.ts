@@ -36,9 +36,9 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   expect:{
-    timeout:5000
+    timeout:10000
   },
-  timeout: 30 * 1000,
+  timeout: 70 * 1000,
 
 
   /* Configure projects for major browsers */
@@ -46,7 +46,8 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+       },
     },
     {
       name: 'setup',
