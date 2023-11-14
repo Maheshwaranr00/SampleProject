@@ -1,4 +1,5 @@
 import test, { chromium, expect } from "@playwright/test";
+import * as fs from 'fs';
 import * as ExcelJS from 'exceljs';
 
 let baseUrl = 'https://uat.quiklyz.com/data-service/buildEntityContext';
@@ -11,7 +12,7 @@ test('response',async()=>{
     await page.click('//a[text()="Corporate"]');
     await page.locator("text=Login  ").click(); //Login
     await page.locator("(//span[normalize-space()='Login'])[1]").click();  //Inner login
-    await page.locator('[name="identifier"]').nth(0).fill('Quiklyz@lowes.com');
+    await page.locator('[name="identifier"]').nth(0).fill('mfjeyeline@airtel.com');
     await page.locator('[class*="mat-flat-button"]').nth(0).click();     
     for(let i=0;i<6;i++){await page.locator('[id*="otpField"]').nth(i).fill(`${i+1}`);}    
     await page.locator("text='Continue'").first().click();     
@@ -21,7 +22,7 @@ test('response',async()=>{
     await page.locator('[class="mat-button-wrapper"]').nth(1).click();
     await page.waitForLoadState("load");    
     await page.waitForTimeout(4000);    
-    await page.locator('[name="inlineSearchField"]').fill('Tata');
+    await page.locator('[name="inlineSearchField"]').fill('TATA');
     await page.keyboard.press('Enter') ;
     await page.locator('[title=" Tata Punch"]').click();      
     const [response] = await Promise.all([
@@ -43,14 +44,14 @@ test('response',async()=>{
          costs.GST_FMS_RENTAL_CHARGES);
    let    Base_Lease_Rental        = costs.BASE_LEASE_RENTAL + costs.GST_RENTAL_CHARGES
    let    Amount1                  = costs.BASE_LEASE_RENTAL
-   let    gst1                     = costs.GST_RENTAL_CHARGES
-   let    Amount2                  = costs.FMS_RENTAL 
+   let    pricegst1                     = costs.GST_RENTAL_CHARGES
+   let    Amount2                  = costs.FMS_RENTAL - costs.ROAD_SIDE_ASSISTANCE
    let    gst2                     = Amount2*0.18
-   let    fleet_management_charges = costs.FMS_RENTAL  + costs.GST_FMS_RENTAL_CHARGES
+   let    fleet_management_charges = Amount2  + gst2 
    let    reimbursement            = costs.REIMBURSEMENTS
    let    total_monthly_rental     = Base_Lease_Rental + fleet_management_charges + reimbursement 
    let val1 =[    Base_Lease_Rental,Amount1, 
-                  gst1,             fleet_management_charges,
+                  pricegst1,             fleet_management_charges,
                    Amount2,                       gst2,
                   reimbursement,    total_monthly_rental];
     await page.locator('[id*="mat-expansion-panel"]').nth(1).click();  
@@ -60,7 +61,7 @@ test('response',async()=>{
     for(let i=0;i<8;i++){console.log(calc[i],val1[i], prices[i+10]);}    
     let testResults : any;
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('TestResults');     
+    const worksheet = workbook.addWorksheet('TestResultsMinDIS');     
     worksheet.columns = [
         { header: 'priceList', key: 'prices' },
         { header: 'BackendDetails', key: 'backend' },
@@ -74,13 +75,14 @@ test('response',async()=>{
           ];
           worksheet.addRows(testResults);
     }        
-    workbook.xlsx.writeFile('test_results.xlsx')
+    workbook.xlsx.writeFile('test_results2.xlsx')
   .then(() => {
     console.log('Excel file saved.');
   })
   .catch((error) => {
     console.error('Error saving Excel file:', error);
   });
+  
     await page.pause();
 })
 
